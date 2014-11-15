@@ -17,7 +17,8 @@ script="$RANDOM$$$$$$.sh"
 echo "script=$script"
 mkdir -p /tmp/docker_networking/
 cp install-routes.sh /tmp/docker_networking/$script
-id=$(docker run --privileged --name $nname -v /tmp/docker_networking:/scripts/ -di --link $cname:private_server public-networking:latest /scripts/$script)
+chmod a+x /tmp/docker_networking/$script
+id=$(docker run --privileged --name $nname -v /tmp/docker_networking:/scripts/ -di --link $cname:private_server public-networking:latest bash /scripts/$script)
 echo "containerid=$id"
 
 # create a new network device eth1 inside the networking container
