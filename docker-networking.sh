@@ -17,7 +17,7 @@ cname=$1
 ifdev=$2
 
 # get the container's exposed ports
-ports=$(docker ps | grep " $cname" | awk -F" {2,}" '{print $6}')
+ports=$(docker ps | grep " $cname" | awk -F" {2,}" '{print $6}' | grep -o -G '\->[0-9]*' | grep -o -G '[0-9]*')
 
 # start the networking container
 nname="publicnetwork-$1"
