@@ -1,5 +1,13 @@
 # This script creates a networking container 
 
+me=`basename $0`
+if [ $# -lt 2 ]; then
+  echo "Usage: $me CONTAINERNAME IFDEV"
+  echo "   CONTAINERNAME    The name of a running container for which to create a network container"
+  echo "   IFDEV            The name of the network device on the host machine through which network traffic should be bridged"
+  exit 1
+fi
+
 # The first argument is the name of the existing container for which
 # we want to expose its ports on a public address
 cname=$1
