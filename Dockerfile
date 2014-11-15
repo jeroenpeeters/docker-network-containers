@@ -1,4 +1,4 @@
-FROM centos:6.4
+FROM centos:centos6
 
 # install essentials
 RUN yum install -y wget dhclient
