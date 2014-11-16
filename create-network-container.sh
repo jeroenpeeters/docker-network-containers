@@ -1,23 +1,31 @@
 # This script creates a networking container 
 
 me=`basename $0`
-if [ $# -lt 2 ]; then
+function usage(){
   echo "Usage: $me CONTAINERNAME IFDEV"
   echo "   CONTAINERNAME    The name of a running container for which to create a network container"
   echo "   IFDEV            The name of the network device on the host machine through which network traffic should be bridged"
   exit 1
+}
+if [ $# -lt 2 ]; then
+  usage
 fi
 
 # The first argument is the name of the existing container for which
 # we want to expose its ports on a public address
 cname=$1
+containerinfo=$(docker ps | awk -F " {2,}" '{print $6, $7}' | grep "$cname")
+if [[ ! -z  $containerinfo  ]]; then 
+  echo "No container with name $cname"
+  exit 1
+fi
 
 # The second argument is the name of the network device on the host that
 # should be bridged into the networking container
 ifdev=$2
 
 # get the container's exposed ports
-ports=$(docker ps | grep " $cname" | awk -F" {2,}" '{print $6}' | grep -o -G '\->[0-9]*' | grep -o -G '[0-9]*')
+ports=$(echo $containerinfo | grep -o -G '\->[0-9]*' | grep -o -G '[0-9]*')
 
 # create the script for running inside the networking container
 mkdir -p /tmp/docker_networking/
@@ -33,6 +41,7 @@ echo "dhclient -v eth1" >> /tmp/docker_networking/$script
 # lookup the ip of the private_server in the docker network
 echo "ip=\$(echo \$(cat /etc/hosts | grep private_server) | cut -d ' ' -f 1)" >> /tmp/docker_networking/$script
 echo $ports | while read -r port ; do
+  echo "creating iptables route for port $port"
   echo "iptables -t nat -A PREROUTING -p tcp --dport $port -j DNAT --to-destination \$ip:$port" >> /tmp/docker_networking/$script
 done
 echo "iptables -t nat -A POSTROUTING -j MASQUERADE" >> /tmp/docker_networking/$script
