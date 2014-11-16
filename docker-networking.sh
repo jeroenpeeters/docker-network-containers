@@ -19,14 +19,28 @@ ifdev=$2
 # get the container's exposed ports
 ports=$(docker ps | grep " $cname" | awk -F" {2,}" '{print $6}' | grep -o -G '\->[0-9]*' | grep -o -G '[0-9]*')
 
-# start the networking container
-nname="publicnetwork-$1"
-script="$RANDOM$$$$$$.sh"
-echo "script=$script"
+# create the script for running inside the networking container
 mkdir -p /tmp/docker_networking/
-cp install-routes.sh /tmp/docker_networking/$script
+# name of the network container
+name="publicnetwork-$cname" 
+# name of the script
+script="$RANDOM$$$$$$.sh"
+# create the script
+# wait for eth1 to be created
+echo "/opt/bin/pipework --wait -i eth1" >> /tmp/docker_networking/$script
+# acquire ip from dhcp server
+echo "dhclient -v eth1" >> /tmp/docker_networking/$script
+# lookup the ip of the private_server in the docker network
+echo "ip=\$(echo \$(cat /etc/hosts | grep private_server) | cut -d ' ' -f 1)" >> /tmp/docker_networking/$script
+echo $ports | while read -r port ; do
+  echo "iptables -t nat -A PREROUTING -p tcp --dport $port -j DNAT --to-destination \$ip:$port" >> /tmp/docker_networking/$script
+done
+echo "iptables -t nat -A POSTROUTING -j MASQUERAD" >> /tmp/docker_networking/$script
+echo "bash" >> /tmp/docker_networking/$script
+# make it executable
 chmod a+x /tmp/docker_networking/$script
-id=$(docker run --privileged --name $nname -v /tmp/docker_networking:/scripts/ -di --link $cname:private_server jeroenpeeters/public-networking:latest bash /scripts/$script)
+# start the network container executing the script
+id=$(docker run --privileged --name $name -v /tmp/docker_networking:/scripts/ -di --link $cname:private_server jeroenpeeters/public-networking:latest bash /scripts/$script)
 echo "containerid=$id"
 
 # create a new network device eth1 inside the networking container
