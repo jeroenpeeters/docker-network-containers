@@ -15,7 +15,7 @@ fi
 # we want to expose its ports on a public address
 cname=$1
 containerinfo=$(docker ps | awk -F " {2,}" '{print $6, $7}' | grep "$cname")
-if [[ ! -z  $containerinfo  ]]; then 
+if [[ -z  $containerinfo  ]]; then 
   echo "No container with name $cname"
   exit 1
 fi
