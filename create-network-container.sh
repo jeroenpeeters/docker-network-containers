@@ -40,7 +40,7 @@ echo "bash" >> /tmp/docker_networking/$script
 # make it executable
 chmod a+x /tmp/docker_networking/$script
 # start the network container executing the script
-id=$(docker run --privileged --name $name -v /tmp/docker_networking:/scripts/ -di --link $cname:private_server jeroenpeeters/public-networking:latest bash /scripts/$script)
+id=$(docker run --privileged --name $name -v /tmp/docker_networking:/scripts/ -dti --link $cname:private_server jeroenpeeters/public-networking:latest bash /scripts/$script)
 echo "containerid=$id"
 
 # create a new network device eth1 inside the networking container
