@@ -40,8 +40,8 @@ echo "bash" >> /tmp/docker_networking/$script
 # remove ourself
 echo "rm /scripts/$script" >> /tmp/docker_networking/$script
 
-# make it executable
-chmod a+x /tmp/docker_networking/$script
+# make it executable, writable
+chmod a+wrx /tmp/docker_networking/$script
 # start the network container executing the script
 id=$(docker run --privileged --name $name -v /tmp/docker_networking:/scripts/ -dti --link $cname:private_server jeroenpeeters/public-networking:latest bash /scripts/$script)
 echo "containerid=$id"
