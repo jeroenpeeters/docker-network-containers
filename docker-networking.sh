@@ -35,7 +35,7 @@ echo "ip=\$(echo \$(cat /etc/hosts | grep private_server) | cut -d ' ' -f 1)" >>
 echo $ports | while read -r port ; do
   echo "iptables -t nat -A PREROUTING -p tcp --dport $port -j DNAT --to-destination \$ip:$port" >> /tmp/docker_networking/$script
 done
-echo "iptables -t nat -A POSTROUTING -j MASQUERAD" >> /tmp/docker_networking/$script
+echo "iptables -t nat -A POSTROUTING -j MASQUERADE" >> /tmp/docker_networking/$script
 echo "bash" >> /tmp/docker_networking/$script
 # make it executable
 chmod a+x /tmp/docker_networking/$script
