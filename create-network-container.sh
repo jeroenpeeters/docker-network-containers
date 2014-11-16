@@ -37,8 +37,6 @@ echo $ports | while read -r port ; do
 done
 echo "iptables -t nat -A POSTROUTING -j MASQUERADE" >> /tmp/docker_networking/$script
 echo "bash" >> /tmp/docker_networking/$script
-# remove ourself
-echo "rm /scripts/$script" >> /tmp/docker_networking/$script
 
 # make it executable, writable
 chmod a+wrx /tmp/docker_networking/$script
@@ -49,3 +47,18 @@ echo "containerid=$id"
 # create a new network device eth1 inside the networking container
 # and bridge it to the host network device
 sudo /opt/bin/pipework $ifdev $id 0/0
+
+# wait for the public ip to be bound to the networking container
+while [ 1 ]; do
+  pubip=$(docker logs $name | grep "bound to" | awk '{print $3}');
+  if [[ $pubip ]]; then
+    echo "ip=$pubip"
+    break;
+  else
+    echo "waiting for public ip to be bound"
+    sleep 5
+  fi
+done
+
+# container is running, remove the script
+rm /tmp/docker_networking/$script
