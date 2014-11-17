@@ -67,7 +67,7 @@ Installation
 
 Install the Docker Network Container scripts on each Docker host:
 
-    git clone https://github.com/jeroenpeeters/docker-networking-container.git /tmp/networking-container
+    git clone https://github.com/jeroenpeeters/docker-network-containers.git /tmp/networking-container
     cp /tmp/networking-container/create-network-container.sh /opt/bin/
     cp /tmp/networking-container/remove-network-container.sh /opt/bin/
     chmod +x /opt/bin/create-network-container.sh /opt/bin/remove-network-container.sh
