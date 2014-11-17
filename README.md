@@ -58,9 +58,17 @@ Lets assume that you have a running container named 'webserver' exposing port 80
 
 Installation
 ------------
-Install these scripts on all Docker hosts. If you use CoreOS, put the following script in your cloud-config.
+
+### Requirements
+
+  - To bridge the network interface I rely on https://github.com/jpetazzo/pipework, install this first.
+  - The network interface on the Docker host should allow for promiscuous mode: `ip link set dev ETH_DEV_NAME promisc on`
+  - When running on a virtualized environment (VMWare, VirtualBox, etc) the virtual tap devices should be set to allow promiscuous mode as well.
+
+Install the Docker Network Container scripts on each Docker host:
 
     git clone https://github.com/jeroenpeeters/docker-networking-container.git /tmp/networking-container
     cp /tmp/networking-container/create-network-container.sh /opt/bin/
     cp /tmp/networking-container/remove-network-container.sh /opt/bin/
     chmod +x /opt/bin/create-network-container.sh /opt/bin/remove-network-container.sh
+    
