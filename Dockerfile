@@ -1,3 +1,6 @@
+# This is a minimal dockerfile based on centos6 used to facilitate running the generated iptables script.
+# Nothing magical happening here....
+
 FROM centos:centos6
 
 # install essentials
