@@ -40,7 +40,7 @@ echo "/opt/bin/pipework --wait -i eth1" >> /tmp/docker_networking/$script
 echo "dhclient -v eth1" >> /tmp/docker_networking/$script
 # lookup the ip of the private_server in the docker network
 echo "ip=\$(echo \$(cat /etc/hosts | grep private_server) | cut -d ' ' -f 1)" >> /tmp/docker_networking/$script
-echo $ports | while read -r port ; do
+for port in $ports; do
   echo "creating iptables route for port $port"
   echo "iptables -t nat -A PREROUTING -p tcp --dport $port -j DNAT --to-destination \$ip:$port" >> /tmp/docker_networking/$script
 done
