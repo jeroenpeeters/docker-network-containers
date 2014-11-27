@@ -10,7 +10,6 @@ if [[ $(docker ps | grep $name) ]]; then
   if [[ $(docker ps | grep publicnetwork-$name) ]]; then
     x=$(docker rm --link publicnetwork-$name/private_server)
     x=$(docker stop publicnetwork-$name)
-    x=$(docker rm publicnetwork-$name)
   else
     echo "Container $name has no public networking container"
   fi
