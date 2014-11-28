@@ -14,7 +14,7 @@ fi
 # The first argument is the name of the existing container for which
 # we want to expose its ports on a public address
 cname=$1
-ports=$(docker inspect $cname| /opt/bin/jq -r '.[0].Config.ExposedPorts' | grep -o -G '[0-9]*')
+ports=$(docker inspect -f '{{range $p, $conf := .NetworkSettings.Ports}}{{$p}} {{end}}' $cname | grep -o -G '[0-9]*')
 if [[ -z  $ports  ]]; then 
   echo "No container with name $cname"
   exit 1
