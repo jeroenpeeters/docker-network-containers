@@ -62,7 +62,6 @@ Installation
 ### Requirements
 
   - To bridge the network interface I rely on https://github.com/jpetazzo/pipework, install this first. It is assumed that pipework is available as */opt/bin/pipework*.
-  - To parse JSON objects the script uses jq (http://stedolan.github.io/jq/). The script assumes that jq is available as */opt/bin/jq*.
   - The network interface on the Docker host should allow for promiscuous mode: `ip link set dev ETH_DEV_NAME promisc on`
   - When running on a virtualized environment (VMWare, VirtualBox, etc) the virtual tap devices should be set to allow promiscuous mode as well.
 
