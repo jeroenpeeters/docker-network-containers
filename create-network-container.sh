@@ -14,8 +14,8 @@ fi
 # The first argument is the name of the existing container for which
 # we want to expose its ports on a public address
 cname=$1
-containerinfo=$(docker ps | awk -F " {2,}" '{print $6, $7}' | grep "$cname")
-if [[ -z  $containerinfo  ]]; then 
+ports=$(docker inspect $cname| /opt/bin/jq -r '.[0].Config.ExposedPorts' | grep -o -G '[0-9]*')
+if [[ -z  $ports  ]]; then 
   echo "No container with name $cname"
   exit 1
 fi
@@ -23,9 +23,6 @@ fi
 # The second argument is the name of the network device on the host that
 # should be bridged into the networking container
 ifdev=$2
-
-# get the container's exposed ports
-ports=$(echo $containerinfo | grep -o -G '\->[0-9]*' | grep -o -G '[0-9]*')
 
 # create the script for running inside the networking container
 mkdir -p /tmp/docker_networking/
