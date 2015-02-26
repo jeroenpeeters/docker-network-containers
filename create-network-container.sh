@@ -1,4 +1,4 @@
-# This script creates a networking container 
+# This script creates a networking container
 
 me=`basename $0`
 function usage(){
@@ -14,9 +14,26 @@ fi
 # The first argument is the name of the existing container for which
 # we want to expose its ports on a public address
 cname=$1
+
+# Check if the container is running
+# If not, sleep for a while and retry
+counter=0
+while [[ counter=$((counter+1)) -lt 5 ]]; do
+  dockerFound=$(docker ps | grep $cname)
+  if [ "$dockerFound" ]; then break; fi
+  echo "No container with name '$cname', waiting..."
+  sleep 5
+done
+if [[ -z "$dockerFound" ]]; then
+  # No container found after several attempts, abort
+  echo "No container with name ''$cname', aborting"
+  exit 1
+fi
+
+# Check if the container exposes ports
 ports=$(docker inspect -f '{{range $p, $conf := .NetworkSettings.Ports}}{{$p}} {{end}}' $cname | grep -o -G '[0-9]*')
-if [[ -z  $ports  ]]; then 
-  echo "No container with name $cname"
+if [[ -z  $ports  ]]; then
+  echo "Container '$cname' does not expose ports, aborting"
   exit 1
 fi
 
@@ -27,7 +44,7 @@ ifdev=$2
 # create the script for running inside the networking container
 mkdir -p /tmp/docker_networking/
 # name of the network container
-name="publicnetwork-$cname" 
+name="publicnetwork-$cname"
 # name of the script
 script="$RANDOM$$$$$$.sh"
 # create the script
