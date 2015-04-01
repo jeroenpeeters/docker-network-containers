@@ -11,6 +11,7 @@ RUN apk --update add iptables
 
 # dhcpclient script
 ADD scripts/dhclient-script /sbin/dhclient-script
+RUN chmod +x /sbin/dhclient-script
 
 # install pipework
 ADD https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework /opt/bin/
