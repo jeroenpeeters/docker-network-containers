@@ -1,9 +1,8 @@
 # This is a minimal dockerfile based on centos6 used to facilitate running the generated iptables script.
 # Nothing magical happening here....
 
-MAINTAINER jeroen@peetersweb.nl
-
 FROM gliderlabs/alpine
+MAINTAINER jeroen@peetersweb.nl
 
 # install essentials
 RUN apk --update add bash
