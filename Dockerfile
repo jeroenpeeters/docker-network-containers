@@ -1,4 +1,4 @@
-# This is a minimal dockerfile based on centos6 used to facilitate running the generated iptables script.
+# This is a minimal dockerfile based on alpine used to facilitate running the generated iptables script.
 # Nothing magical happening here....
 
 FROM gliderlabs/alpine
