@@ -1,11 +1,12 @@
 # This is a minimal dockerfile based on centos6 used to facilitate running the generated iptables script.
 # Nothing magical happening here....
 
-FROM centos:centos6
+FROM docker-registry.isd.ictu:5000/alpine
 
 # install essentials
-RUN yum install -y wget dhclient
+RUN apk --update add dhclient
+RUN apk --update add iptables
 
 # install pipework
-RUN wget -N -P /opt/bin/ https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework
+ADD https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework /opt/bin/ 
 RUN chmod +x /opt/bin/pipework
