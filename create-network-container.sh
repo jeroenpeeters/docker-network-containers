@@ -1,7 +1,7 @@
 # This script creates a networking container
 
 me=`basename $0`
-function usage(){
+function usage {
   echo "Usage: $me CONTAINERNAME IFDEV"
   echo "   CONTAINERNAME    The name of a running container for which to create a network container"
   echo "   IFDEV            The name of the network device on the host machine through which network traffic should be bridged"
@@ -73,12 +73,12 @@ sudo /opt/bin/pipework $ifdev $id 0/0
 
 # wait for the public ip to be bound to the networking container
 while [ 1 ]; do
-  pubip=$(docker logs $name | grep "bound to" | awk '{print $3}');
+  pubip=$(docker exec $name ifconfig eth1 | grep "inet addr:" | awk '{print $2}' | awk -F: '{print $2}');
   if [[ $pubip ]]; then
     echo "ip=$pubip"
     break;
   else
-    echo "waiting for public ip to be bound"
+    echo "waiting on IP from DHCP"
     sleep 5
   fi
 done
