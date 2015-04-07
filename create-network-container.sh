@@ -1,7 +1,7 @@
 # This script creates a networking container
 
 me=`basename $0`
-function usage {
+function usage(){
   echo "Usage: $me CONTAINERNAME IFDEV"
   echo "   CONTAINERNAME    The name of a running container for which to create a network container"
   echo "   IFDEV            The name of the network device on the host machine through which network traffic should be bridged"
@@ -34,7 +34,7 @@ fi
 ports=$(docker inspect -f '{{range $p, $conf := .NetworkSettings.Ports}}{{$p}} {{end}}' $cname | grep -o -G '[0-9]*')
 if [[ -z  $ports  ]]; then
   echo "Container '$cname' does not expose ports, aborting"
-  exit 0
+  exit 1
 fi
 
 # The second argument is the name of the network device on the host that
@@ -55,7 +55,7 @@ echo "dhclient -v eth1" >> /tmp/docker_networking/$script
 # lookup the ip of the private_server in the docker network
 echo "ip=\$(echo \$(cat /etc/hosts | grep private_server) | cut -d ' ' -f 1)" >> /tmp/docker_networking/$script
 for port in $ports; do
-  echo "creating iptables route for port $port to $ip"
+  echo "creating iptables route for port $port"
   echo "iptables -t nat -A PREROUTING -p tcp --dport $port -j DNAT --to-destination \$ip:$port" >> /tmp/docker_networking/$script
 done
 echo "iptables -t nat -A POSTROUTING -j MASQUERADE" >> /tmp/docker_networking/$script
@@ -73,12 +73,12 @@ sudo /opt/bin/pipework $ifdev $id 0/0
 
 # wait for the public ip to be bound to the networking container
 while [ 1 ]; do
-  pubip=$(docker exec $name ifconfig eth1 | grep "inet addr:" | awk '{print $2}' | awk -F: '{print $2}');
+  pubip=$(docker logs $name | grep "bound to" | awk '{print $3}');
   if [[ $pubip ]]; then
     echo "ip=$pubip"
     break;
   else
-    echo "waiting for public ip from DHCP"
+    echo "waiting for public ip to be bound"
     sleep 5
   fi
 done

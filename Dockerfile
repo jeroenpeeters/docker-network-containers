@@ -1,18 +1,11 @@
-# This is a minimal dockerfile based on alpine used to facilitate running the generated iptables script.
+# This is a minimal dockerfile based on centos6 used to facilitate running the generated iptables script.
 # Nothing magical happening here....
 
-FROM gliderlabs/alpine
-MAINTAINER jeroen@peetersweb.nl
+FROM centos:centos6
 
 # install essentials
-RUN apk --update add bash
-RUN apk --update add dhclient
-RUN apk --update add iptables
-
-# dhcpclient script
-ADD scripts/dhclient-script /sbin/dhclient-script
-RUN chmod +x /sbin/dhclient-script
+RUN yum install -y wget dhclient
 
 # install pipework
-ADD https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework /opt/bin/
+RUN wget -N -P /opt/bin/ https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework
 RUN chmod +x /opt/bin/pipework
