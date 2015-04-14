@@ -1,3 +1,8 @@
+**Warning: The branch does not work yet, work in progress!**
+
+The objective of this branch is to remove the bash scripts that are now used to spawn and configure the network container.
+Ideally it should be possible to start a network container and simply link it to an existing service.
+
 Docker Network Containers
 ===========================
 
@@ -71,4 +76,3 @@ Install the Docker Network Container scripts on each Docker host:
     cp /tmp/networking-container/create-network-container.sh /opt/bin/
     cp /tmp/networking-container/remove-network-container.sh /opt/bin/
     chmod +x /opt/bin/create-network-container.sh /opt/bin/remove-network-container.sh
-    
