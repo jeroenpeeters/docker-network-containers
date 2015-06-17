@@ -57,6 +57,7 @@ echo "ip=\$(echo \$(cat /etc/hosts | grep private_server) | cut -d ' ' -f 1)" >>
 for port in $ports; do
   echo "creating iptables route for port $port"
   echo "iptables -t nat -A PREROUTING -p tcp --dport $port -j DNAT --to-destination \$ip:$port" >> /tmp/docker_networking/$script
+  echo "iptables -t nat -A PREROUTING -p udp --dport $port -j DNAT --to-destination \$ip:$port" >> /tmp/docker_networking/$script
 done
 echo "iptables -t nat -A POSTROUTING -j MASQUERADE" >> /tmp/docker_networking/$script
 echo "bash" >> /tmp/docker_networking/$script
